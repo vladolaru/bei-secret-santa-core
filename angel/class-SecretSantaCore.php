@@ -70,7 +70,7 @@ class SecretSantaCore
                 $colleagues[$random] = $aux;
             }
 
-            
+
         }
 
     }
