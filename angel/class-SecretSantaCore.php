@@ -48,15 +48,31 @@ class SecretSantaCore
                     echo $newUser[1] . " emailul este deja folosit!" . "<br>";
                 }
             } else {
-                echo $newUser['nume'] . " Nu a fost adaugat!" . "<br>";
+                echo $newUser[0] . " Nu a fost adaugat!" . "<br>";
             }
         }
     }
 
     public function goRudolph() {
         if ( $this->checkIfReady() ) {
+            $colleagues = array();
+
+            foreach ( $this->users as $pos => $user ) {
+                $colleagues[$pos] = $pos;
+            }
+
+            $noParticipants = count( $this->users );
+            for ( $i = 0; $i < $noParticipants - 1; $i++ ){
+                $random = rand($i + 1, $noParticipants - 1);
+
+                $aux = $colleagues[$i];
+                $colleagues[$i] = $colleagues[$random];
+                $colleagues[$random] = $aux;
+            }
+
             
         }
+
     }
 
     public function getSentEmailsAddresses() {
@@ -94,7 +110,7 @@ class SecretSantaCore
         $this->users[$position]['email'] = $user[1];
     }
 
-    protected  function checkParticipant( $participant ) {
+    protected function checkParticipant( $participant ) {
         if( count ( $participant ) != 2 ) {
             return false;
         }
