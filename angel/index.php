@@ -16,10 +16,10 @@ $santa = new SecretSantaCore();
 
 // More sanity check.
 if ( ! method_exists( $santa, 'setMailFrom' ) ||
-     ! method_exists( $santa, 'setMailTitle' ) ||
-     ! method_exists( $santa, 'setRecommendedValue' ) ||
-     ! method_exists( $santa, 'setUsers' ) ||
-     ! method_exists( $santa, 'run' ) ||
+     ! method_exists( $santa, 'setEmailTitle' ) ||
+     ! method_exists( $santa, 'setRecommendedExpenses' ) ||
+     ! method_exists( $santa, 'addUsers' ) ||
+     ! method_exists( $santa, 'goRudolph' ) ||
      ! method_exists( $santa, 'getSentEmailsAddresses' ) ) {
 
 	include dirname( __DIR__ ) . '/error.php';
@@ -30,13 +30,13 @@ if ( ! method_exists( $santa, 'setMailFrom' ) ||
 $santa->setMailFrom('santa@northpole.com');
 
 // Set the sent emails' title.
-$santa->setMailTitle( 'You have some gifting to do..' );
+$santa->setEmailTitle( 'You have some gifting to do..' );
 
 // Set the recommended expenses value.
-$santa->setRecommendedValue( 10 );
+$santa->setRecommendedExpenses( 10 );
 
 // Set the users that are participating in the Secret Santa game.
-$santa->setUsers(
+$santa->addUsers(
 		[
 				[ 'Vlad', 'vlad@secretsanta.com', ],
 				[ 'Angel', 'angel@secretsanta.com', ],
@@ -48,7 +48,7 @@ $santa->setUsers(
 );
 
 // Pair users and send them the emails with the necessary emails.
-$santa->run();
+$santa->goRudolph();
 
 // Get some feedback data for double checking
 echo 'For logging purposes, here are the email addresses we\'ve sent to:' . PHP_EOL;

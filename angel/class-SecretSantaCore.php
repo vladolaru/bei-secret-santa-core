@@ -5,9 +5,9 @@ class SecretSantaCore
     protected $emailTitle = null;
     protected $recommendedExpenses = null;
     protected $users = array();
-    protected $sentEmails = array();
+    protected $sentEmailsAddresses = array();
 
-    public function setFromEmail( $email ) {
+    public function setMailFrom( $email ) {
         if( filter_var( $email, FILTER_VALIDATE_EMAIL ) ) {
             $this->fromEmail = $email;
         } else {
@@ -19,7 +19,7 @@ class SecretSantaCore
         $tempTitle = str_split( $title );
         foreach ( $tempTitle as $char ){
             if( !(  ( $char >= 'A' && $char <= 'Z' ) || ( $char >= 'a' && $char <='z' ) ||
-                    ( $char >= '0' && $char <= '9' ) || ( $char == ' ' || $char == '!' ) ) ) {
+                    ( $char >= '0' && $char <= '9' ) || ( $char == ' ' || $char == '!' || $char == '.' ) ) ) {
                     echo "Titlul $title nu este valid!" . "<br>";
                     break;
             }
@@ -55,9 +55,14 @@ class SecretSantaCore
 
     public function goRudolph() {
         if ( $this->checkIfReady() ) {
-
+            
         }
     }
+
+    public function getSentEmailsAddresses() {
+        return $this->sentEmailsAddresses;
+    }
+
 
     protected function checkIfReady() {
         if( empty( $this->fromEmail ) ) {
@@ -83,7 +88,7 @@ class SecretSantaCore
         return true;
     }
 
-    protected function addUser($user) {
+    protected function addUser( $user ) {
         $position = count($this->users);
         $this->users[$position]['name'] = $user[0];
         $this->users[$position]['email'] = $user[1];
