@@ -1,2 +1,9 @@
 # bei_secret_santa_core
+
 The Secret Santa Core exercise in our Backend Internship program.
+
+## Rules
+
+- each one will only work in their respective directory;
+- you should push code changes as often as possible (at least twice a day);
+- you already have a pseudo-testing code in `index.php` in your respective directory;
