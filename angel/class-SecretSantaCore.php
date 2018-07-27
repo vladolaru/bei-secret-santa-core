@@ -70,7 +70,18 @@ class SecretSantaCore
                 $colleagues[$random] = $aux;
             }
 
-
+            foreach( $this->users as $key => $user ) {
+                if(
+                    mail( $user['email'], $this->emailTitle,
+                        "Draga " . $user['name'] . ",\r\nTrebuie sa ii iei cadou lui " .
+                        $this->users[$colleagues[$key]]['name'] . " cu emailul " . $this->users[$colleagues[$key]]['email'] .
+                        " in valoare de " . $this->recommendedExpenses . " lei!",
+                        "From: " . $this->fromEmail
+                        )
+                ) {
+                    array_push($this->sentEmailsAddresses, $user['email']);
+                }
+            }
         }
 
     }
