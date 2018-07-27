@@ -20,7 +20,7 @@ if ( ! method_exists( $santa, 'setFromEmail' ) ||
      ! method_exists( $santa, 'setRecommendedExpenses' ) ||
      ! method_exists( $santa, 'addUsers' ) ||
      ! method_exists( $santa, 'goRudolph' ) ||
-     ! method_exists( $santa, 'getSentEmailsAdresses' ) ) {
+     ! method_exists( $santa, 'getSentEmailsAddresses' ) ) {
 
 	include dirname( __DIR__ ) . '/error.php';
 	die;
