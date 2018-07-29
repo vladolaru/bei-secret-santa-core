@@ -32,7 +32,7 @@ class SecretSantaCore
             if( $allocatedSum > 0 ) {
                 $this->recommendedExpenses = $allocatedSum;
             } else {
-                echo "recommendedExpenses nu poate fi mai mic ca zero" . "<br>";
+                echo "recommendedExpenses nu poate fi mai mic ca zero!" . "<br>";
             }
         } else {
             echo "recommendedExpenses trebuie sa fie un numar!" . "<br>";
@@ -93,22 +93,22 @@ class SecretSantaCore
 
     protected function checkIfReady() {
         if( empty( $this->fromEmail ) ) {
-            echo "error: emailTitle nu poate lipsi!";
+            echo "error: emailTitle nu poate lipsi!" . "<br>";
             return false;
         }
 
         if( empty( $this->recommendedExpenses ) ) {
-            echo "error: recommendedExpenses nu poate lipsi!";
+            echo "error: recommendedExpenses nu poate lipsi!" . "<br>";
             return false;
         }
 
         if( empty( $this->emailTitle ) ) {
             $this->emailTitle = 'No title';
-            echo "warning: emailTitle nu a fost setat si se va folosi titlul \'No title\'";
+            echo "warning: emailTitle nu a fost setat si se va folosi titlul \'No title\'" . "<br>";
         }
 
         if( count( $this->users ) < 2) {
-            echo "error: numar invalid de participanti!";
+            echo "error: numar invalid de participanti!" . "<br>";
             return false;
         }
 

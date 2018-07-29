@@ -33,7 +33,7 @@ $santa->setMailFrom('santa@northpole.com');
 $santa->setEmailTitle( 'You have some gifting to do..' );
 
 // Set the recommended expenses value.
-$santa->setRecommendedExpenses( 10 );
+$santa->setRecommendedExpenses( 3.141592 );
 
 // Set the users that are participating in the Secret Santa game.
 $santa->addUsers(
@@ -44,6 +44,9 @@ $santa->addUsers(
 				[ 'Ionel', 'ionel@secretsanta.com', ],
 				[ 'Viorica', 'viorica', ],
 				[ 'Simona', '12344.com', ],
+                [ 'Ionel', 'ionel@secretsanta.com', 'ceapapa'],
+                [ 'Ionel23', 'ionel@secretsanta.com', ],
+                [ 'Cosmin', 'cosmin@secretsanta.com', ],
 		]
 );
 
