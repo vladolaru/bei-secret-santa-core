@@ -55,26 +55,22 @@ class SecretSantaCore
 
     public function goRudolph() {
         if ( $this->checkIfReady() ) {
-            $colleagues = array();
 
-            foreach ( $this->users as $pos => $user ) {
-                $colleagues[$pos] = $pos;
-            }
+            $colleagues = $this->users;
 
             $noParticipants = count( $this->users );
-            for ( $i = 0; $i < $noParticipants - 1; $i++ ){
+
+            for ( $i = 0; $i < $noParticipants - 1; $i++ ) {
                 $random = rand($i + 1, $noParticipants - 1);
 
-                $aux = $colleagues[$i];
-                $colleagues[$i] = $colleagues[$random];
-                $colleagues[$random] = $aux;
+                $this->swap( $colleagues[$i], $colleagues[$random] );
             }
 
             foreach( $this->users as $key => $user ) {
                 if(
                     mail( $user['email'], $this->emailTitle,
                         "Draga " . $user['name'] . ",\r\nTrebuie sa ii iei cadou lui " .
-                        $this->users[$colleagues[$key]]['name'] . " cu emailul " . $this->users[$colleagues[$key]]['email'] .
+                        $colleagues[$key]['name'] . " cu emailul " . $colleagues[$key]['email'] .
                         " in valoare de " . $this->recommendedExpenses . " lei!",
                         "From: " . $this->fromEmail
                         )
@@ -144,6 +140,12 @@ class SecretSantaCore
             }
         }
         return false;
+    }
+
+    protected function swap ( &$a , &$b ) {
+        $aux = $a;
+        $a = $b;
+        $b = $aux;
     }
 }
 
