@@ -1,5 +1,5 @@
 <?php
-class SecretSantaCoreAngel
+class SecretSantaCore
 {
     /**
      * The email that will sent the messages
@@ -48,7 +48,7 @@ class SecretSantaCoreAngel
      */
     public function setMailFrom( $email ) {
         if( !filter_var( $email, FILTER_VALIDATE_EMAIL ) ) {
-            throw Exception('Emailul: ' . $email . ' este invalid', 0);
+            throw new Exception('Emailul: ' . $email . ' este invalid', 0);
         }
         $this->fromEmail = $email;
     }
@@ -60,12 +60,12 @@ class SecretSantaCoreAngel
      * @param $title string
      * @return void
      */
-    public function setEmailTitle($title ) {
+    public function setEmailTitle( $title ) {
         $tempTitle = str_split( $title );
         foreach ( $tempTitle as $char ){
             if( !(  ( $char >= 'A' && $char <= 'Z' ) || ( $char >= 'a' && $char <='z' ) ||
                     ( $char >= '0' && $char <= '9' ) || ( $char == ' ' || $char == '!' || $char == '.' ) ) ) {
-                   throw Exception('Titlul ' . $title . ' nu este valid!', 0);
+                   throw new Exception('Titlul ' . $title . ' nu este valid!', 0);
             }
         }
         $this->emailTitle = $title;
@@ -76,15 +76,15 @@ class SecretSantaCoreAngel
      *
      * @throws Exception code 0 in case of invalid format of parameter or code 1 in case of invalid value
      * @param $allocatedSum int | string
-     * @return null
+     * @return void
      */
-    public function setRecommendedExpenses($allocatedSum ) {
+    public function setRecommendedExpenses( $allocatedSum ) {
         if ( ! is_numeric( $allocatedSum ) ) {
-            throw Exception('recommendedExpenses nu este o valoare numerica', 0);
+            throw new Exception('recommendedExpenses nu este o valoare numerica', 0);
         }
 
         if ($allocatedSum <= 0) {
-            throw Exception('recommendedExpenses nu poate avea o valoare negativa sau 0', 1);
+            throw new Exception('recommendedExpenses nu poate avea o valoare negativa sau 0', 1);
         }
 
         $this->recommendedExpenses = $allocatedSum;
@@ -198,11 +198,11 @@ class SecretSantaCoreAngel
      */
     protected function addUser($user ) {
         if( !$this->checkParticipant( $user ) ) {
-            throw Exception( $user[0] . 'is an invalid user', 0);
+            throw new Exception( $user[0] . 'is an invalid user', 0);
         }
 
         if ( $this->participantExists( $user[1] ) ) {
-            throw Exception( $user[1] . 'already in event', 1);
+            throw new Exception( $user[1] . 'already in event', 1);
         }
 
         $this->users[] = array(
@@ -266,5 +266,3 @@ class SecretSantaCoreAngel
         $b = $aux;
     }
 }
-
-
