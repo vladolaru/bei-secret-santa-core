@@ -1,81 +1,69 @@
 <?php
 
-class SecretSantaCore
+class SecretSantaCoreCosmin
 {
     protected $fromEmail = '';
-    protected $emailTitle = '';
+    protected $emailTitle = 'NoTitle';
     protected $recommendedExpenses = 0;
     protected $users = array();
-    protected $user = '';
     protected $userEmail = '';
 
 
     public function setFromEmail($email)
     {
-
         if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $this->fromEmail = $email;
+            return 1;
         } else
-            echo "The email from which the emails will be sent is not a valid one!";
+            //echo "The email from which the emails will be sent is not a valid one!";
+        return 0;
     }
 
     public function setRecommendedExpenses($sum)
     {
-        if (is_numeric($sum)) {
+        if (is_numeric($sum) && $sum>0) {
             $this->recommendedExpenses = $sum;
+            return 1;
         } else
-            echo "The value given to recommended sum is not a numeric one!";
+            return 0;
     }
 
     public function setEmailTitle($title)
     {
         $this->emailTitle = $title;
+        return 1;
     }
 
-    public function getUsers($users)
+    public function getSentEmailAddresses($users)
     {
-
-    }
-
-    public function getSentEmailAddresses()
-    {
-        getUsers();
         foreach ($users as $key => $user) {
             return $user['email'];
         }
     }
 
-    public function addUsers()
+    public function addUsers($users)
     {
-        //luam userii si ii punem intr-un array
+        $users = array ('users' => array ('name', 'email'));
     }
 
     public function randomizeUsers($users)
     {
-        //verificam validitatea array-ului nostru, si anume sa contina cel putin 3 useri
-        if (count($users) > 2) {
-            $firstuserkey = 0;
-            $lastuserkey = count($users) - 1;
-            rand($firstUser, $lastUser);
-        }
-        if (count($users) <= 2 && count($users) > 0) {
-            echo "Very few users added, result is obvious";
-        } else
-            echo "No users were written!";
-
-
+            $firstUser = 0;
+            $lastUser = count($users) - 1;
+            return rand($firstUser, $lastUser);
     }
 
     public function userSantaCheck()
     {
-        //doar o potentiala metoda de a rezolva problema gasirii a doi user care au flag=1,
-        //si anume sunt pasibili de a primi cadou; mai e mult de modificat
-        foreach ($users as key=>$user){
-        randomizeUsers($users);
-        $pairedUsers=count($users)/2;
 
-        //la fiecare pereche gasita, scadem $pairedUsers pana ajungem la 0.
-        // Cand ajungem, returnam flag=1 pentru a spune ca userSantaCheck si-a terminat treaba
+        if (count($this->users) <= 2 && count($this->users) >= 0) {
+            //echo "Very few users added, result is obvious";
+            return 0;
+        }
+        if()
+
+
+
 
         $msg='Dear' . ' ' . $user1 . ', ' . ' the person you will have to give a gift to is' . ' ' . $user2 . ', ' .
             'and the gift value is' . ' ' . $recommendedExpenses . ' USD';
@@ -85,13 +73,11 @@ class SecretSantaCore
 
     public function goRudolph()
     {
-        userSantaCheck();
-        if(flag=1)
+        //sa nu uitam sa verificam ca avem toate valorile valide
+        if($this->userSantaCheck()==0)
         {
-            mail($fromEmail,$emailTitle,$msg);
+            echo "You missed something!";
         }
-        else
-            userSantaCheck();
     }
 
 
