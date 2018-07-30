@@ -1,58 +1,120 @@
 <?php
-class SecretSantaCore
+class SecretSantaCoreAngel
 {
+    /**
+     * The email that will sent the messages
+     *
+     * @var null | string
+     */
     protected $fromEmail = null;
+    /**
+     * The title of the email
+     *
+     * @var null | string
+     */
     protected $emailTitle = null;
+    /**
+     * The recommended value of the gift
+     *
+     * @var null | int | float
+     */
     protected $recommendedExpenses = null;
+    /**
+     * The list of people that will participate in the event
+     *
+     * @var array
+     */
     protected $users = array();
+    /**
+     * The list of emails that were sent
+     *
+     * @var array
+     */
     protected $sentEmailsAddresses = array();
 
-    public function setMailFrom( $email ) {
-        if( filter_var( $email, FILTER_VALIDATE_EMAIL ) ) {
-            $this->fromEmail = $email;
-        } else {
-            echo "Emailul: $email este invalid!" . "<br>";
-        }
+    /**
+     * SecretSantaCoreAngel constructor.
+     */
+    public function __construct() {
+
     }
 
-    public function setEmailTitle( $title ) {
+    /**
+     * Sets the fromEmail attribute
+     *
+     * @throws Exception in case of invalid email
+     * @param $email string
+     * @return void
+     */
+    public function setMailFrom( $email ) {
+        if( !filter_var( $email, FILTER_VALIDATE_EMAIL ) ) {
+            throw Exception('Emailul: ' . $email . ' este invalid', 0);
+        }
+        $this->fromEmail = $email;
+    }
+
+    /**
+     * Sets the title of the emailTitle attribute
+     *
+     * @throws Exception in case of invalid title
+     * @param $title string
+     * @return void
+     */
+    public function setEmailTitle($title ) {
         $tempTitle = str_split( $title );
         foreach ( $tempTitle as $char ){
             if( !(  ( $char >= 'A' && $char <= 'Z' ) || ( $char >= 'a' && $char <='z' ) ||
                     ( $char >= '0' && $char <= '9' ) || ( $char == ' ' || $char == '!' || $char == '.' ) ) ) {
-                    echo "Titlul $title nu este valid!" . "<br>";
-                    break;
+                   throw Exception('Titlul ' . $title . ' nu este valid!', 0);
             }
         }
         $this->emailTitle = $title;
     }
 
-    public function setRecommendedExpenses( $allocatedSum ) {
-        if( is_numeric( $allocatedSum ) ) {//true si in cazul stringurilor numerice
-            if( $allocatedSum > 0 ) {
-                $this->recommendedExpenses = $allocatedSum;
-            } else {
-                echo "recommendedExpenses nu poate fi mai mic ca zero!" . "<br>";
-            }
-        } else {
-            echo "recommendedExpenses trebuie sa fie un numar!" . "<br>";
+    /**
+     * Sets the recommendedExpenses attribute
+     *
+     * @throws Exception code 0 in case of invalid format of parameter or code 1 in case of invalid value
+     * @param $allocatedSum int | string
+     * @return null
+     */
+    public function setRecommendedExpenses($allocatedSum ) {
+        if ( ! is_numeric( $allocatedSum ) ) {
+            throw Exception('recommendedExpenses nu este o valoare numerica', 0);
         }
+
+        if ($allocatedSum <= 0) {
+            throw Exception('recommendedExpenses nu poate avea o valoare negativa sau 0', 1);
+        }
+
+        $this->recommendedExpenses = $allocatedSum;
     }
 
-    public function addUsers( $newUsers ) {
+    /**
+     * Calls the addUser() method for each user and throws the appropriate error for each one
+     *
+     * @param $newUsers
+     * @throws Exception from the addUser method
+     * @see $this->addUser() for what exception are thrown
+     * @return void
+     */
+    public function addUsers($newUsers ) {
         foreach ( $newUsers as $newUser ) {
-            if ( $this->checkParticipant( $newUser ) ) {
-                if( !$this->participantExists( $newUser ) ) {
-                    $this->addUser($newUser);
-                } else {
-                    echo $newUser[1] . " emailul este deja folosit!" . "<br>";
-                }
-            } else {
-                echo $newUser[0] . " Nu a fost adaugat!" . "<br>";
+            try {
+                $this->addUser($newUser);
+                } catch (Exception $e) {
+               throw $e;
             }
         }
     }
 
+    /**
+     * Sends the emails
+     *
+     * Generates the random matches between the participants and sends the emails. If the sending succeeds, the receiver's email address is added tot the sentEmailsAddresses attribute.
+     *
+     * @return void
+     */
     public function goRudolph() {
         if ( $this->checkIfReady() ) {
 
@@ -82,11 +144,25 @@ class SecretSantaCore
 
     }
 
+    /**
+     * Returns the array that contains the email addresses to which notifications were sent
+     *
+     * Must be called after the goRudolph() for conclusive results
+     *
+     * @return array
+     */
     public function getSentEmailsAddresses() {
         return $this->sentEmailsAddresses;
     }
 
 
+    /**
+     * Checks if all the info necessary for sending the emails is present.
+     *
+     * There must be at least 2 participants, fromEmail and recommendedExpenses must be set and in case there was not title given, emailTitle is set to 'No title'
+     *
+     * @return bool true if ready, false otherwise
+     */
     protected function checkIfReady() {
         if( empty( $this->fromEmail ) ) {
             echo "error: emailTitle nu poate lipsi!" . "<br>";
@@ -111,12 +187,39 @@ class SecretSantaCore
         return true;
     }
 
-    protected function addUser( $user ) {
-        $position = count($this->users);
-        $this->users[$position]['name'] = $user[0];
-        $this->users[$position]['email'] = $user[1];
+    /**
+     * Checks if the new user is valid for the event
+     *
+     * If the participant doesn't meat the criteria, code 0 exception is thrown. In case that the user already exists in the event, code 1 is thrown
+     *
+     * @throws Exception
+     * @param $user array
+     * @return void
+     */
+    protected function addUser($user ) {
+        if( !$this->checkParticipant( $user ) ) {
+            throw Exception( $user[0] . 'is an invalid user', 0);
+        }
+
+        if ( $this->participantExists( $user[1] ) ) {
+            throw Exception( $user[1] . 'already in event', 1);
+        }
+
+        $this->users[] = array(
+            'name' => $user[0],
+            'email'=> $user[1],
+        );
     }
 
+    /**
+     * Checks if the pretender meets the criteria
+     *
+     * The $participant array should have exactly 2 entries, the name should contain only alphabetic characters and the mail must be valid
+     *
+     * @see filter_var()
+     * @param $participant array
+     * @return bool
+     */
     protected function checkParticipant( $participant ) {
         if( count ( $participant ) != 2 ) {
             return false;
@@ -133,16 +236,31 @@ class SecretSantaCore
         return true;
     }
 
-    protected function participantExists( $participant ) {
+    /**
+     * Checks if the pretender isn't already in the event
+     *
+     * If the email corresponds to another email from an user already in the event, the pretender is rejected
+     *
+     * @param $participantEmail string
+     * @return bool true if it already exists, false otherwise
+     */
+    protected function participantExists( $participantEmail ) {
         foreach ( $this->users as $user){
-            if( $user['email'] == $participant[1] ) {
+            if( $user['email'] == $participantEmail ) {
                 return true;
             }
         }
         return false;
     }
 
-    protected function swap ( &$a , &$b ) {
+    /**
+     * Interchanges the values pointed by a and b
+     *
+     * @param $a
+     * @param $b
+     * @return void
+     */
+    protected function swap (&$a , &$b ) {
         $aux = $a;
         $a = $b;
         $b = $aux;
