@@ -33,7 +33,7 @@ class SecretSantaCore
     protected $sentEmailsAddresses = array();
 
     /**
-     * SecretSantaCoreAngel constructor.
+     * SecretSantaCore constructor.
      */
     public function __construct() {
 
@@ -93,17 +93,16 @@ class SecretSantaCore
     /**
      * Calls the addUser() method for each user and throws the appropriate error for each one
      *
-     * @param $newUsers
-     * @throws Exception from the addUser method
+     * @param $newUsers array
      * @see $this->addUser() for what exception are thrown
      * @return void
      */
-    public function addUsers($newUsers ) {
+    public function addUsers( $newUsers ) {
         foreach ( $newUsers as $newUser ) {
             try {
-                $this->addUser($newUser);
+                $this->addUser( $newUser );
                 } catch (Exception $e) {
-               throw $e;
+                print_r( $e->getMessage() . '<br>');
             }
         }
     }
@@ -113,32 +112,34 @@ class SecretSantaCore
      *
      * Generates the random matches between the participants and sends the emails. If the sending succeeds, the receiver's email address is added tot the sentEmailsAddresses attribute.
      *
+     * @throws Exception in case of insufficient data
      * @return void
      */
     public function goRudolph() {
-        if ( $this->checkIfReady() ) {
+        if ( !$this->checkIfReady() ) {
+            throw new Exception('Fatal error',0);
+        }
 
-            $colleagues = $this->users;
+        $colleagues = $this->users;
 
-            $noParticipants = count( $this->users );
+        $noParticipants = count( $this->users );
 
-            for ( $i = 0; $i < $noParticipants - 1; $i++ ) {
-                $random = rand($i + 1, $noParticipants - 1);
+        for ( $i = 0; $i < $noParticipants - 1; $i++ ) {
+            $random = rand($i + 1, $noParticipants - 1);
 
-                $this->swap( $colleagues[$i], $colleagues[$random] );
-            }
+            $this->swap( $colleagues[$i], $colleagues[$random] );
+        }
 
-            foreach( $this->users as $key => $user ) {
-                if(
-                    mail( $user['email'], $this->emailTitle,
-                        "Draga " . $user['name'] . ",\r\nTrebuie sa ii iei cadou lui " .
-                        $colleagues[$key]['name'] . " cu emailul " . $colleagues[$key]['email'] .
-                        " in valoare de " . $this->recommendedExpenses . " lei!",
-                        "From: " . $this->fromEmail
-                        )
-                ) {
-                    array_push($this->sentEmailsAddresses, $user['email']);
-                }
+        foreach( $this->users as $key => $user ) {
+            if(
+            mail( $user['email'], $this->emailTitle,
+                "Draga " . $user['name'] . ",\r\nTrebuie sa ii iei cadou lui " .
+                $colleagues[$key]['name'] . " cu emailul " . $colleagues[$key]['email'] .
+                " in valoare de " . $this->recommendedExpenses . " lei!",
+                "From: " . $this->fromEmail
+            )
+            ) {
+                array_push($this->sentEmailsAddresses, $user['email']);
             }
         }
 
@@ -196,13 +197,13 @@ class SecretSantaCore
      * @param $user array
      * @return void
      */
-    protected function addUser($user ) {
+    protected function addUser( $user ) {
         if( !$this->checkParticipant( $user ) ) {
-            throw new Exception( $user[0] . 'is an invalid user', 0);
+            throw new Exception( $user[0] . ' is an invalid user', 0);
         }
 
         if ( $this->participantExists( $user[1] ) ) {
-            throw new Exception( $user[1] . 'already in event', 1);
+            throw new Exception( $user[1] . ' already in event', 1);
         }
 
         $this->users[] = array(
