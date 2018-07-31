@@ -67,7 +67,17 @@ class SecretSantaCoreVlad
 
     protected function pairUsers()
     {
-        
+        $ru = array();
+        for ($i = 0; $i < count($this->users); $i++) {
+            $ru[$i] = 0;
+        }
+        for ($i = 0; $i < count($this->users); $i++) {
+            $v = $this->randomize();
+            while ($ru[$v] != 0 || $v == $i) {
+                $v = $this->randomize();
+            }
+            $ru[$v] = 1;
+        }
     }
 
     public function getSentEmailsAddresses()
@@ -86,13 +96,29 @@ class SecretSantaCoreVlad
     public function goRudolph()
     {
         if ($this->checkUser() == true) {
+            foreach ($this->users as $user) {
                 array_push($this->getSentEmailsAddresses(), $this->users['email']);
+            }
+
+
+            $this->pairUsers();
+
+            for ($v = 0; $v < count($this->users); $v++) {
+                $msg = $this->users[$v]['name'] . ',' . "\r\n" . "\r\n" . "The Christmas is coming and for the Secret Santa event you have to buy a present for " . $this->users[$this->randomize[$v]]['name'] . " , his/her email is "
+                    . $this->users[$this->randomize[$v]]['email'] . ". Also, the recommended value of the gift is " . $this->recommendedExpenses
+                    . ". Merry Christmas!";
+                mail($this->users[$v]['email'], $this->emailTitle, $msg, "From: " . $this->fromEmail);
+            }
 
         }
 
-
+            else
+            echo "Please check again!!";
     }
+
 }
+
+
 
 
 
