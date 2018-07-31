@@ -1,6 +1,5 @@
 <?php
-class SecretSantaCore
-{
+class SecretSantaCoreAngel {
     /**
      * The email that will sent the messages
      *
@@ -44,13 +43,15 @@ class SecretSantaCore
      *
      * @throws Exception in case of invalid email
      * @param $email string
-     * @return void
+     * @return true
      */
     public function setMailFrom( $email ) {
         if( !filter_var( $email, FILTER_VALIDATE_EMAIL ) ) {
             throw new Exception('Emailul: ' . $email . ' este invalid', 0);
         }
         $this->fromEmail = $email;
+
+        return true;
     }
 
     /**
@@ -58,7 +59,7 @@ class SecretSantaCore
      *
      * @throws Exception in case of invalid title
      * @param $title string
-     * @return void
+     * @return true
      */
     public function setEmailTitle( $title ) {
         $tempTitle = str_split( $title );
@@ -69,6 +70,8 @@ class SecretSantaCore
             }
         }
         $this->emailTitle = $title;
+
+	    return true;
     }
 
     /**
@@ -88,20 +91,22 @@ class SecretSantaCore
         }
 
         $this->recommendedExpenses = $allocatedSum;
+
+        return true;
     }
 
     /**
      * Calls the addUser() method for each user and throws the appropriate error for each one
      *
      * @param $newUsers array
-     * @see $this->addUser() for what exception are thrown
-     * @return void
+     * @see $this->addUser() for what exceptions are thrown
+     * @return int|false The number of added users or false on invalid input format.
      */
     public function addUsers( $newUsers ) {
         foreach ( $newUsers as $newUser ) {
             try {
                 $this->addUser( $newUser );
-                } catch (Exception $e) {
+            } catch (Exception $e) {
                 print_r( $e->getMessage() . '<br>');
             }
         }
