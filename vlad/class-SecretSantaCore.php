@@ -1,25 +1,25 @@
 <?php
 class SecretSantaCoreVlad
 {
-    protected $FromEmail = null;
-    protected $EmailTitle = null;
+    protected $fromEmail = null;
+    protected $emailTitle = null;
     protected $recommendedExpenses = null;
     protected $users = array();
-    protected $sentEmails = array();
+    protected $sentEmailsAddresses = array();
     protected $pair = array();
 
     public function setFromEmail($email)
     {
         if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $this->FromEmail = $email;
+            $this->fromEmail = $email;
         } else {
-            echo "The e-mail $email address is invaild!";
+            return false;
         }
     }
 
     public function setEmailTitle($subject)
     {
-        $this->EmailTitle = $subject;
+        $this->emailTitle = $subject;
     }
 
     public function setRecommendedExpenses($recommended)
@@ -37,7 +37,8 @@ class SecretSantaCoreVlad
 
     public function addUsers($users)
     {
-        array_push($this->users, array('name' => $user[0], 'email' => $user[1]));
+        array_push($this->users, array('name' => $users[0], 'email' => $users[1]));
+
     }
 
     public function randomizeEmails($users)
@@ -49,22 +50,26 @@ class SecretSantaCoreVlad
 
     protected function checkMultipleEmail()
     {
+        
     }
 
-    public function getSentEmailAddresses()
+    public function getSentEmailsAddresses()
     {
-        return $this->sentEmails;
+        return $this->sentEmailsAddresses;
     }
 
     public function checkUser()
     {
-        if ($this->FromEmail == '' || $this->recommendedExpenses == 0) {
+        if ($this->fromEmail == '' || $this->recommendedExpenses == 0 || $this->checkMultipleEmail() == false) {
             return false;
         } else
             return true;
     }
 
-    public function goRudolph(){}
+    public function goRudolph()
+    {
+
+    }
 }
 
 
