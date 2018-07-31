@@ -12,7 +12,7 @@ if ( ! class_exists('SecretSantaCore' ) ) {
 }
 
 // Create a new instance.
-$santa = new SecretSantaCore();
+$santa = new SecretSantaCoreVlad();
 
 // More sanity check.
 if ( ! method_exists( $santa, 'setFromEmail' ) ||

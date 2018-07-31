@@ -41,7 +41,7 @@ class SecretSantaCoreVlad
 
     }
 
-    public function randomizeEmails($users)
+    public function randomize($users)
     {
         $first = 0;
         $last = count($this->users) - 1;
@@ -49,6 +49,23 @@ class SecretSantaCoreVlad
     }
 
     protected function checkMultipleEmail()
+    {
+        for ($m = 0; $m < count($this->users); $m++) {
+            if (filter_var($this->users[$m]['email'], FILTER_VALIDATE_EMAIL) == false) {
+                return false;
+            }
+        }
+        for ($m = 0; $m < count($this->users) - 2; $m++) {
+            for ($n = $m + 1; $n < count($this->users) - 1; $n++) {
+                if ($this->users[$m]['email'] == $this->users[$n]['email']) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    protected function pairUsers()
     {
         
     }
@@ -68,6 +85,11 @@ class SecretSantaCoreVlad
 
     public function goRudolph()
     {
+        if ($this->checkUser() == true) {
+                array_push($this->getSentEmailsAddresses(), $this->users['email']);
+
+        }
+
 
     }
 }
