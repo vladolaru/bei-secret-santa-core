@@ -12,7 +12,7 @@ if ( ! class_exists('SecretSantaCoreCosmin' ) ) {
 }
 
 // Create a new instance.
-$santa = new SecretSantaCoreCosmin();
+$santa = new SecretSantaCore();
 
 // More sanity check.
 if ( ! method_exists( $santa, 'setFromEmail' ) ||
@@ -42,8 +42,7 @@ $santa->addUsers(
 				[ 'Angel', 'angel@secretsanta.com', ],
 				[ 'Cosmin', 'cosmin@secretsanta.com', ],
 				[ 'Ionel', 'ionel@secretsanta.com', ],
-				[ 'Viorica', 'viorica', ],
-				[ 'Simona', '12344.com', ],
+
 		]
 );
 
@@ -52,4 +51,4 @@ $santa->goRudolph();
 
 // Get some feedback data for double checking
 echo 'For logging purposes, here are the email addresses we\'ve sent to:' . PHP_EOL;
-print_r( $santa->getSentEmailsAdresses() );
+print_r( $santa->getSentEmailsAddresses() );
