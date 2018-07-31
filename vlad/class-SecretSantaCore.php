@@ -1,59 +1,71 @@
 <?php
-class SecretSantaCore
+class SecretSantaCoreVlad
 {
     protected $FromEmail = null;
     protected $EmailTitle = null;
     protected $recommendedExpenses = null;
     protected $users = array();
-    protected $sentEmails = array ();
+    protected $sentEmails = array();
+    protected $pair = array();
 
-    public function setFromEmail ($email)
+    public function setFromEmail($email)
     {
-        if (filter_var($email,FILTER_VALIDATE_EMAIL))
-        {
-            $this-> FromEmail = $email;
-        }
-        else {
+        if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $this->FromEmail = $email;
+        } else {
             echo "The e-mail $email address is invaild!";
         }
     }
-    public function setEmailTitle ($subject) {
-        foreach ($subject as $type ){
-            if( !(  ( $type >= 'A' && $type <= 'Z' ) || ( $type >= 'a' && $type <='z' ) ||
-                ( $type >= '0' && $type <= '9' ) || ( $type == ' ' || $type == '!' || $type == '.' ) ) ) {
-                echo "Wrong subject";
-                break;
-            }
-        }
+
+    public function setEmailTitle($subject)
+    {
         $this->EmailTitle = $subject;
     }
-    public function setRecommendedExpenses ($recommended)
+
+    public function setRecommendedExpenses($recommended)
     {
-        if (is_numeric($recommended))
-        {
-            if ($recommended > 0)
-            {
+        if (is_numeric($recommended)) {
+            if ($recommended > 0) {
                 $this->recommendedExpenses = $recommended;
-            }
-            else {
+            } else {
                 echo "You should introduce a positive number.";
             }
-        }
-        else {
+        } else {
             echo "Please introduce a number.";
         }
     }
-    public function addUsers (array)
+
+    public function addUsers($users)
     {
-        $name=['name'];
-        $email=['email'];
-        $users= array('name' => $name, 'email' => $email);
+        array_push($this->users, array('name' => $user[0], 'email' => $user[1]));
     }
-    public function goRudolph () {}
-    public function getSentEmailsAddresses (){}
 
+    public function randomizeEmails($users)
+    {
+        $first = 0;
+        $last = count($this->users) - 1;
+        return rand($first, $last);
+    }
+
+    protected function checkMultipleEmail()
+    {
+    }
+
+    public function getSentEmailAddresses()
+    {
+        return $this->sentEmails;
+    }
+
+    public function checkUser()
+    {
+        if ($this->FromEmail == '' || $this->recommendedExpenses == 0) {
+            return false;
+        } else
+            return true;
+    }
+
+    public function goRudolph(){}
 }
-
 
 
 
