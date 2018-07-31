@@ -1,30 +1,30 @@
 <?php
 
-class SecretSantaCore
+class SecretSantaCoreCosmin
 {
     protected $fromEmail = '';
-    protected $emailTitle = '';
+    protected $emailTitle = 'NoTitle';
     protected $recommendedExpenses = 0;
     protected $users = array();
-    protected $user = '';
-    protected $userEmail = '';
+    protected $sentEmailAddresses = array();
+    protected $pairing = array();//vector de frecventa, 1 inseamna ca a fost luat,0 ca e valid
 
 
     public function setFromEmail($email)
     {
-
         if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $this->fromEmail = $email;
         } else
-            echo "The email from which the emails will be sent is not a valid one!";
+            //echo "The email from which the emails will be sent is not a valid one!";
+            return false;
     }
 
     public function setRecommendedExpenses($sum)
     {
-        if (is_numeric($sum)) {
+        if (is_numeric($sum) && $sum > 0) {
             $this->recommendedExpenses = $sum;
         } else
-            echo "The value given to recommended sum is not a numeric one!";
+            $this->recommendedExpenses = 0; //return false;
     }
 
     public function setEmailTitle($title)
@@ -32,75 +32,85 @@ class SecretSantaCore
         $this->emailTitle = $title;
     }
 
-    public function getUsers($users)
-    {
-
-    }
-
     public function getSentEmailAddresses()
     {
-        getUsers();
-        foreach ($users as $key => $user) {
-            return $user['email'];
-        }
+        return $this->sentEmailAddresses;
     }
 
-    public function addUsers()
+!!!!!!!!!!!!!!!!!!!!!!!!!!public function addUsers($users)
+{
+    array_push($this->users, array('name' => $user[0], 'email' => $user[1]));
+
+}
+
+    public function randomizeUsers()
     {
-        //luam userii si ii punem intr-un array
-    }
-
-    public function randomizeUsers($users)
-    {
-        //verificam validitatea array-ului nostru, si anume sa contina cel putin 3 useri
-        if (count($users) > 2) {
-            $firstuserkey = 0;
-            $lastuserkey = count($users) - 1;
-            rand($firstUser, $lastUser);
-        }
-        if (count($users) <= 2 && count($users) > 0) {
-            echo "Very few users added, result is obvious";
-        } else
-            echo "No users were written!";
-
-
+        $firstUser = 0;
+        $lastUser = count($this->users) - 1;
+        return rand($firstUser, $lastUser);
     }
 
     public function userSantaCheck()
     {
-        //doar o potentiala metoda de a rezolva problema gasirii a doi user care au flag=1,
-        //si anume sunt pasibili de a primi cadou; mai e mult de modificat
-        foreach ($users as key=>$user){
-        randomizeUsers($users);
-        $pairedUsers=count($users)/2;
+        if (count($this->users) <= 2 && count($this->users) >= 0) {
+            //echo "Very few users added, result is obvious";
+            return false;
+        }
+        if ($this->fromEmail == '' || $this->recommendedExpenses == 0 || $this->doubleCheckUsersEmail() == false) {
+            return false;
+        } else
+            return true;
+    }
 
-        //la fiecare pereche gasita, scadem $pairedUsers pana ajungem la 0.
-        // Cand ajungem, returnam flag=1 pentru a spune ca userSantaCheck si-a terminat treaba
+    protected function doPairing()
+    {
+        //initializam matricea cu 0
+        for ($i = 0; $i < count($this->users); $i++) {
+            $this->pairing[$i] = 0;
+        }
 
-        $msg='Dear' . ' ' . $user1 . ', ' . ' the person you will have to give a gift to is' . ' ' . $user2 . ', ' .
-            'and the gift value is' . ' ' . $recommendedExpenses . ' USD';
-        echo $msg;
+        //pentru fiecare user inscris, ii gasim o pereche, conditia fiind ca destinatarul sa nu fie ales deja
+        for ($i = 0; $i < count($this->users); $i++) {
+            $a = $this->randomizeUsers();
 
+            while ($this->pairing[$a] == 1) {
+                $a = $this->randomizeUsers();
+            }
+            $this->pairing[$a] = 1;
+        }
+    }
+
+
+//verificam ca 2 useri sa nu aiba acelasi e-mail
+    protected function doubleCheckUsersEmail()
+    {
+        for ($i = 0; $i < count($this->users); $i++) {
+            if (filter_var($this->users[$i]['email'], FILTER_VALIDATE_EMAIL) == false) {
+                return false;
+            }
+        }
+
+        for ($i = 0; $i < count($this->users) - 2; $i++) {
+            for ($j = $i + 1; $j < count($this->users) - 1; $j++) {
+                if ($this->users[$i]['email'] == $this->users[$j]['email']) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     public function goRudolph()
     {
-        userSantaCheck();
-        if(flag=1)
-        {
-            mail($fromEmail,$emailTitle,$msg);
-        }
-        else
-            userSantaCheck();
-    }
-
-
-
+        if ($this->userSantaCheck() == true) {
+            foreach ($this->users as $user)
+                array_push($this->getSentEmailAddresses(), $this->users['email']);
+            ////$this->pairing($this->users);
+        } else
+            echo "Not all the information written is correct, please retry!";
     }
 
 
 }
 
-//de gandit algoritmul in care punem in array-ul nostru
-//cum luam datele specifice, cum ar fi adresele la care s-au trimis emailurile date de noi
-//algoritmul care verifica validitatea userilor in momentul imperecherii si mesajul necesar
+
