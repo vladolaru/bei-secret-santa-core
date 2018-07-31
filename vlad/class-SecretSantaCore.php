@@ -39,6 +39,8 @@ class SecretSantaCoreVlad
     {
         array_push($this->users, array('name' => $users[0], 'email' => $users[1]));
 
+        var_dump( $this->users );
+
     }
 
     public function randomize($users)
@@ -89,8 +91,9 @@ class SecretSantaCoreVlad
     {
         if ($this->fromEmail == '' || $this->recommendedExpenses == 0 || $this->checkMultipleEmail() == false) {
             return false;
-        } else
-            return true;
+        } else {
+	        return true;
+        }
     }
 
     public function goRudolph()
