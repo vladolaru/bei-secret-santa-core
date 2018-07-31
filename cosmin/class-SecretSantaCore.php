@@ -7,7 +7,7 @@ class SecretSantaCoreCosmin
     protected $recommendedExpenses = 0;
     protected $users = array();
     protected $sentEmailAddresses = array();
-    protected $pairing = array();
+    protected $pairing = array();//vector de frecventa, 1 inseamna ca a fost luat,0 ca e valid
 
 
     public function setFromEmail($email)
@@ -37,13 +37,13 @@ class SecretSantaCoreCosmin
         return $this->sentEmailAddresses;
     }
 
-    public function addUsers($users)
-    {
-        array_push($this->users, array('name' => $user[0], 'email' => $user[1]));
+!!!!!!!!!!!!!!!!!!!!!!!!!!public function addUsers($users)
+{
+    array_push($this->users, array('name' => $user[0], 'email' => $user[1]));
 
-    }
+}
 
-    public function randomizeUsers($users)
+    public function randomizeUsers()
     {
         $firstUser = 0;
         $lastUser = count($this->users) - 1;
@@ -56,33 +56,56 @@ class SecretSantaCoreCosmin
             //echo "Very few users added, result is obvious";
             return false;
         }
-        if ($this->fromEmail == '' || $this->recommendedExpenses == 0) {
+        if ($this->fromEmail == '' || $this->recommendedExpenses == 0 || $this->doubleCheckUsersEmail() == false) {
             return false;
         } else
             return true;
     }
 
-    //folosind functia random, punem pe toti cei care au fost deja selectati sa primeasca un cadou,
-    //sa nu fie realesi
-!!!!protected function doPairing()
-{
+    protected function doPairing()
+    {
+        //initializam matricea cu 0
+        for ($i = 0; $i < count($this->users); $i++) {
+            $this->pairing[$i] = 0;
+        }
 
+        //pentru fiecare user inscris, ii gasim o pereche, conditia fiind ca destinatarul sa nu fie ales deja
+        for ($i = 0; $i < count($this->users); $i++) {
+            $a = $this->randomizeUsers();
 
-}
+            while ($this->pairing[$a] == 1) {
+                $a = $this->randomizeUsers();
+            }
+            $this->pairing[$a] = 1;
+        }
+    }
+
 
 //verificam ca 2 useri sa nu aiba acelasi e-mail
-!!!!protected function doubleCheckUsersEmail()
-{
+    protected function doubleCheckUsersEmail()
+    {
+        for ($i = 0; $i < count($this->users); $i++) {
+            if (filter_var($this->users[$i]['email'], FILTER_VALIDATE_EMAIL) == false) {
+                return false;
+            }
+        }
 
-}
+        for ($i = 0; $i < count($this->users) - 2; $i++) {
+            for ($j = $i + 1; $j < count($this->users) - 1; $j++) {
+                if ($this->users[$i]['email'] == $this->users[$j]['email']) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 
     public function goRudolph()
     {
         if ($this->userSantaCheck() == true) {
             foreach ($this->users as $user)
                 array_push($this->getSentEmailAddresses(), $this->users['email']);
-            ////
-            pairing($this->users);
+            ////$this->pairing($this->users);
         } else
             echo "Not all the information written is correct, please retry!";
     }
