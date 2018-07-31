@@ -27,7 +27,6 @@ if ( ! method_exists( $santa, 'setFromEmail' ) ||
 }
 
 // Set the email address the emails will be sent from.
-$santa->randomizeUsers();
 $santa->setFromEmail('santa@northpole.com');
 
 // Set the sent emails' title.
@@ -35,7 +34,6 @@ $santa->setEmailTitle( 'You have some gifting to do..' );
 
 // Set the recommended expenses value.
 $santa->setRecommendedExpenses( 10 );
-$santa->setRecommendedExpenses( -1 );
 
 // Set the users that are participating in the Secret Santa game.
 $santa->addUsers('');

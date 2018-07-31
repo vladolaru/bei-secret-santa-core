@@ -3,16 +3,10 @@
 class SecretSantaCoreCosmin
 {
     protected $fromEmail = '';
-    protected $emailTitle = 'NoTitle';
+    protected $emailTitle = '';
     protected $recommendedExpenses = 0;
     protected $users = array();
     protected $sentEmailsAddresses = array();
-
-	/**
-	 * vector care retine cine trimite si persoana careia ii va trimite
-	 * $a inseamna ca a fost luat, -1 ca e valid pentru a fi luat
-	 * @var array
-	 */
     protected $pairing = array();
 
 
@@ -21,8 +15,7 @@ class SecretSantaCoreCosmin
         if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $this->fromEmail = $email;
         } else {
-	        //echo "The email from which the emails will be sent is not a valid one!";
-	        return false;
+            return false;
         }
     }
 
@@ -37,7 +30,14 @@ class SecretSantaCoreCosmin
 
     public function setEmailTitle($title)
     {
-        $this->emailTitle = $title;
+        if ('' == $title) {
+            $this->emailTitle = 'NoTitle';
+        }
+        else
+        {
+            $this->emailTitle = $title;
+        }
+
     }
 
     public function getSentEmailsAddresses()
@@ -45,36 +45,37 @@ class SecretSantaCoreCosmin
         return $this->sentEmailsAddresses;
     }
 
-	public function addUsers( $users ) {
-    	if ( empty( $users ) || ! is_array( $users ) ) {
-    		return false;
-	    }
+    public function addUsers($users)
+    {
+        if (empty($users) || !is_array($users)) {
+            return false;
+        }
 
-		foreach ( $users as $user ) {
+        foreach ($users as $user) {
 
-			array_push( $this->users, array(
-					'name'  => $user[0],
-					'email' => $user[1],
-				)
-			);
-		}
+            array_push($this->users, array(
+                    'name' => $user[0],
+                    'email' => $user[1],
+                )
+            );
+        }
 
-	}
+    }
 
-	protected function randomizeUsers() {
-		$firstUser = 0;
-		$lastUser  = count( $this->users ) - 1;
+    protected function randomizeUsers()
+    {
+        $firstUser = 0;
+        $lastUser = count($this->users) - 1;
 
-		return rand( $firstUser, $lastUser );
-	}
+        return rand($firstUser, $lastUser);
+    }
 
     public function userSantaCheck()
     {
         if (count($this->users) <= 2 && count($this->users) >= 0) {
-            //echo "Very few users added, result is obvious";
             return false;
         }
-        if ( '' == $this->fromEmail || $this->recommendedExpenses == 0 || $this->doubleCheckUsersEmail() == false) {
+        if ('' == $this->fromEmail || 0 == $this->recommendedExpenses || false == $this->doubleCheckUsersEmail()) {
             return false;
         } else
             return true;
@@ -82,17 +83,12 @@ class SecretSantaCoreCosmin
 
     protected function doPairing()
     {
-        //initializam vectorul frecventa
-        $frequency=array();
-        for ($i = 0; $i < count($this->users); $i++)
-        {
-            $frequency[$i]=0;
+        //initializam cu 0 array-ul care va retine userii care au primit deja cadou; in caz de primesc, valoarea este 1;
+        $frequency = array();
+        for ($i = 0; $i < count($this->users); $i++) {
+            $frequency[$i] = 0;
         }
 
-        //initializam matricea cu -1
-        for ($i = 0; $i < count($this->users); $i++) {
-            $this->pairing[$i] = -1;
-        }
 
         //pentru fiecare user inscris, ii gasim o pereche, conditia fiind ca destinatarul sa nu fie ales deja
         for ($i = 0; $i < count($this->users); $i++) {
@@ -102,7 +98,7 @@ class SecretSantaCoreCosmin
                 $a = $this->randomizeUsers();
             }
             $this->pairing[$i] = $a;
-            $frequency[$a]=1;
+            $frequency[$a] = 1;
         }
     }
 
@@ -131,27 +127,24 @@ class SecretSantaCoreCosmin
         //adaugam userii doriti
 
         if ($this->userSantaCheck() == true) {
-            foreach ($this->users as $user)//push de emailurile la care trimitem
-            {
-                array_push($this->sentEmailsAddresses, $user['email']);
-            }
+
             $this->doPairing();
 
             //trimitem mailurile la fiecare email cu cheia i, cu toate datele aferente
             for ($i = 0; $i < count($this->users); $i++) {
 
-                $msg = 'Dear ' . $this->users[$i]['name'].',' . "\r\n". "\r\n". 'The special person that you have to buy a present for, for the occasion of the Secret Santa Event, is ' . $this->users[$this->pairing[$i]]['name'] . ' with the email '
-                        . $this->users[$this->pairing[$i]]['email'] . ' and the recommended value of the present is ' . $this->recommendedExpenses
-                        . '. Have a jolly day!';
+                $msg = 'Dear ' . $this->users[$i]['name'] . ',' . "\r\n" . "\r\n" . 'The special person that you have to buy a present for, for the occasion of the Secret Santa Event, is ' . $this->users[$this->pairing[$i]]['name'] . ' with the email '
+                    . $this->users[$this->pairing[$i]]['email'] . ' and the recommended value of the present is ' . $this->recommendedExpenses
+                    . '. Have a jolly day!';
 
-                mail($this->users[$i]['email'], $this->emailTitle, $msg, 'From: ' . $this->fromEmail);
+                if (mail($this->users[$i]['email'], $this->emailTitle, $msg, 'From: ' . $this->fromEmail)) {
+                    array_push($this->sentEmailsAddresses, $this->users[$i]['email']);
+                }
             }
 
         } else
-            echo "Not all the information written is correct, please retry!";
+            echo "Not all the information written is correct.";
     }
-
-
 }
 
 
