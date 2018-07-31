@@ -1,31 +1,38 @@
 <?php
 
-class SecretSantaCore
+class SecretSantaCoreCosmin
 {
     protected $fromEmail = '';
     protected $emailTitle = 'NoTitle';
     protected $recommendedExpenses = 0;
     protected $users = array();
     protected $sentEmailsAddresses = array();
-    protected $pairing = array();//vector care retine cine trimite si persoana careia ii va trimite
-                                    // $a inseamna ca a fost luat, -1 ca e valid pentru a fi luat
+
+	/**
+	 * vector care retine cine trimite si persoana careia ii va trimite
+	 * $a inseamna ca a fost luat, -1 ca e valid pentru a fi luat
+	 * @var array
+	 */
+    protected $pairing = array();
 
 
     public function setFromEmail($email)
     {
         if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $this->fromEmail = $email;
-        } else
-            //echo "The email from which the emails will be sent is not a valid one!";
-            return false;
+        } else {
+	        //echo "The email from which the emails will be sent is not a valid one!";
+	        return false;
+        }
     }
 
     public function setRecommendedExpenses($sum)
     {
         if (is_numeric($sum) && $sum > 0) {
             $this->recommendedExpenses = $sum;
-        } else
-            $this->recommendedExpenses = 0; //return false;
+        }
+
+        return false;
     }
 
     public function setEmailTitle($title)
@@ -38,25 +45,28 @@ class SecretSantaCore
         return $this->sentEmailsAddresses;
     }
 
-    public function addUsers( $users )
-{
-    foreach ($users as $user) {
+	public function addUsers( $users ) {
+    	if ( empty( $users ) || ! is_array( $users ) ) {
+    		return false;
+	    }
 
-        array_push($this->users, array(
-                'name' => $user[0],
-                'email' => $user[1]
-            )
-        );
-    }
+		foreach ( $users as $user ) {
 
-}
+			array_push( $this->users, array(
+					'name'  => $user[0],
+					'email' => $user[1],
+				)
+			);
+		}
 
-    public function randomizeUsers()
-    {
-        $firstUser = 0;
-        $lastUser = count($this->users) - 1;
-        return rand($firstUser, $lastUser);
-    }
+	}
+
+	protected function randomizeUsers() {
+		$firstUser = 0;
+		$lastUser  = count( $this->users ) - 1;
+
+		return rand( $firstUser, $lastUser );
+	}
 
     public function userSantaCheck()
     {
@@ -64,7 +74,7 @@ class SecretSantaCore
             //echo "Very few users added, result is obvious";
             return false;
         }
-        if ($this->fromEmail == '' || $this->recommendedExpenses == 0 || $this->doubleCheckUsersEmail() == false) {
+        if ( '' == $this->fromEmail || $this->recommendedExpenses == 0 || $this->doubleCheckUsersEmail() == false) {
             return false;
         } else
             return true;
