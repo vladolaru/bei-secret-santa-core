@@ -40,8 +40,6 @@ class SecretSantaCoreVlad
     {
         array_push($this->users, array('name' => $users[0], 'email' => $users[1]));
 
-        var_dump( $this->users );
-
     }
 
     protected function checkMultipleEmail()
