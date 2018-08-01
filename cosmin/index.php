@@ -42,8 +42,9 @@ $santa->addUsers(
 				[ 'Angel', 'angel@secretsanta.com', ],
 				[ 'Cosmin', 'cosmin@secretsanta.com', ],
 				[ 'Ionel', 'ionel@secretsanta.com', ],
-				[ 'Viorica', 'viorica', ],
-				[ 'Simona', '12344.com', ],
+                [ 'Gica', 'gica@secretsanta.com', ],
+                [ 'zzzzzzzzzzzzzzzzz'],
+
 		]
 );
 
@@ -51,5 +52,5 @@ $santa->addUsers(
 $santa->goRudolph();
 
 // Get some feedback data for double checking
-echo 'For logging purposes, here are the email addresses we\'ve sent to:' . PHP_EOL;
-print_r( $santa->getSentEmailsAdresses() );
+echo 'For logging purposes, here are the email addresses we\'ve sent to: ' . PHP_EOL;
+print_r( $santa->getSentEmailsAddresses() );

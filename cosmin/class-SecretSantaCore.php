@@ -2,90 +2,218 @@
 
 class SecretSantaCoreCosmin
 {
+    /**
+     * The email from which we will send the messages.
+     *
+     * @var null | string
+     */
     protected $fromEmail = '';
-    protected $emailTitle = 'NoTitle';
+
+    /**
+     * The title of the emails.
+     *
+     * @var null | string
+     */
+    protected $emailTitle = '';
+
+    /**
+     * The required sum for the presents.
+     *
+     * @var null | int
+     */
     protected $recommendedExpenses = 0;
+
+    /**
+     * The array in which we will add the persons that will participate for Secret Santa.
+     *
+     * @var array
+     */
     protected $users = array();
-    protected $sentEmailAddresses = array();
-    protected $pairing = array();//vector de frecventa, 1 inseamna ca a fost luat,0 ca e valid
 
+    /**
+     * The array in which we will add the email addresses to which mails were sent.
+     *
+     * @var array
+     */
+    protected $sentEmailsAddresses = array();
 
+    /**
+     * The array that will be used to know who gives a present to who.
+     *
+     * The sender is the $i key value and the receiver will be the one in the pairing[$i] slot.
+     *
+     * @var array
+     */
+    protected $pairing = array();
+
+    /**
+     * Sets the mail from which the messages will be sent.
+     *
+     * @var null | string
+     * @return bool False if the mail fails the validation filter.
+     *              Otherwise, it returns true.
+     */
     public function setFromEmail($email)
     {
-        if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $this->fromEmail = $email;
-        } else
-            //echo "The email from which the emails will be sent is not a valid one!";
+        if (null == filter_var($email, FILTER_VALIDATE_EMAIL) || false == filter_var($email, FILTER_VALIDATE_EMAIL)) {
             return false;
+        } else {
+            $this->fromEmail = $email;
+            return true;
+        }
     }
 
+    /**
+     * Sets the recommendedExpenses attribute.
+     *
+     * @param $sum int | float
+     * @return bool True if the value is a numeric one or if it's bigger than 0.
+     *              Otherwise, it returns false.
+     */
     public function setRecommendedExpenses($sum)
     {
         if (is_numeric($sum) && $sum > 0) {
             $this->recommendedExpenses = $sum;
-        } else
-            $this->recommendedExpenses = 0; //return false;
+            return true;
+        }
+
+        return false;
     }
 
+    /**
+     * Sets the title for all of the emails.
+     *
+     * In case the given string is empty, the title will be 'NoTitle'.
+     * Otherwise, the title will be the given string.
+     *
+     * @param $title null | string
+     */
     public function setEmailTitle($title)
     {
-        $this->emailTitle = $title;
+        $title = trim($title);
+        if ('' == $title) {
+            $this->emailTitle = 'NoTitle';
+        } else {
+            $this->emailTitle = $title;
+        }
+
     }
 
-    public function getSentEmailAddresses()
+    /**
+     * Returns the array that contains the email addresses to which the notifications were sent.
+     *
+     * @return array
+     */
+    public function getSentEmailsAddresses()
     {
-        return $this->sentEmailAddresses;
+        return $this->sentEmailsAddresses;
     }
 
-!!!!!!!!!!!!!!!!!!!!!!!!!!public function addUsers($users)
-{
-    array_push($this->users, array('name' => $user[0], 'email' => $user[1]));
+    /**
+     * Adds all the given users in an array.
+     *
+     *
+     * @param $users array
+     * @return bool False if the array given is empty or if the value given is not an array.
+     *              If there are any given parameters that are not valid, the function just skips them.
+     *              Otherwise, it returns true.
+     */
+    public function addUsers($users)
+    {
+        if (empty($users) || !is_array($users)) {
+            return false;
+        }
 
-}
+        foreach ($users as $user) {
 
-    public function randomizeUsers()
+            if (2 != count($user) ||
+                false == filter_var($user[1], FILTER_VALIDATE_EMAIL) ||
+                '' == trim($user[0]) ||
+                !ctype_alpha($user[0])) {
+                continue;
+            }
+            array_push($this->users, array(
+                    'name' => $user[0],
+                    'email' => $user[1],
+                )
+            );
+        }
+        return true;
+    }
+
+    /**
+     * Selects, from a given range, a random value, which is needed to do the pairing of the users.
+     *
+     * @return int
+     */
+    protected
+    function randomizeUsersKey()
     {
         $firstUser = 0;
         $lastUser = count($this->users) - 1;
+
         return rand($firstUser, $lastUser);
     }
 
-    public function userSantaCheck()
+    /**
+     * Checks if all the functions are properly used, so that there will be no unexpected results after we Run the code.
+     *
+     * @return bool False if there are less than 3 users or no email address from which we will send emails,
+     *              or if the required sum for the gifts is equal to 0, or if the emails validation function fails.
+     *              Otherwise, it returns true.
+     */
+    public
+    function attributesCheck()
     {
-        if (count($this->users) <= 2 && count($this->users) >= 0) {
-            //echo "Very few users added, result is obvious";
+        if (count($this->users) < 3 ||
+            '' == $this->fromEmail ||
+            0 == $this->recommendedExpenses ||
+            false == $this->validateUsersEmails()) {
+
             return false;
-        }
-        if ($this->fromEmail == '' || $this->recommendedExpenses == 0 || $this->doubleCheckUsersEmail() == false) {
-            return false;
-        } else
+        } else {
             return true;
+        }
     }
 
-    protected function doPairing()
+    /**
+     * It initializes a frequency array (with the 0 value) that will help in knowing which user already received a present.
+     *
+     * Does the pairings and puts the values in the $pairing array.
+     *
+     * @see $pairing - to understand what the array represents.
+     */
+    protected
+    function doPairing()
     {
-        //initializam matricea cu 0
+        $frequency = array();
         for ($i = 0; $i < count($this->users); $i++) {
-            $this->pairing[$i] = 0;
+            $frequency[$i] = 0;
         }
 
-        //pentru fiecare user inscris, ii gasim o pereche, conditia fiind ca destinatarul sa nu fie ales deja
         for ($i = 0; $i < count($this->users); $i++) {
-            $a = $this->randomizeUsers();
+            $randomUser = $this->randomizeUsersKey();
 
-            while ($this->pairing[$a] == 1) {
-                $a = $this->randomizeUsers();
+            while (0 != $frequency[$randomUser] || $randomUser == $i) {
+                $randomUser = $this->randomizeUsersKey();
             }
-            $this->pairing[$a] = 1;
+            $this->pairing[$i] = $randomUser;
+            $frequency[$randomUser] = 1;
         }
     }
 
-
-//verificam ca 2 useri sa nu aiba acelasi e-mail
-    protected function doubleCheckUsersEmail()
+    /**
+     * Checks if there is an email address wrongly written, or if there are 2 emails that are the same.
+     *
+     *
+     * @return bool False if there is an invalid email or if there are users with the same email.
+     *              Otherwise returns true.
+     */
+    protected
+    function validateUsersEmails()
     {
         for ($i = 0; $i < count($this->users); $i++) {
-            if (filter_var($this->users[$i]['email'], FILTER_VALIDATE_EMAIL) == false) {
+            if (false == filter_var($this->users[$i]['email'], FILTER_VALIDATE_EMAIL)) {
                 return false;
             }
         }
@@ -100,17 +228,35 @@ class SecretSantaCoreCosmin
         return true;
     }
 
-    public function goRudolph()
+    /**
+     * Checks if every required function was used properly, does the pairing between the given users.
+     *
+     * Sends the emails to the users, and, one by one, if the email is accepted for delivery, it is added to the sentEmailAddresses attribute.
+     *
+     * @see doPairing() - to understand how the pairings are done and how/to who are the emails sent.
+     */
+    public
+    function goRudolph()
     {
-        if ($this->userSantaCheck() == true) {
-            foreach ($this->users as $user)
-                array_push($this->getSentEmailAddresses(), $this->users['email']);
-            ////$this->pairing($this->users);
+
+        if ($this->attributesCheck() == true) {
+
+            $this->doPairing();
+
+            for ($i = 0; $i < count($this->users); $i++) {
+
+                $msg = 'Dear ' . $this->users[$i]['name'] . ',' . "\r\n" . "\r\n" . 'The special person that you have to buy a present for, for the occasion of the Secret Santa Event, is ' . $this->users[$this->pairing[$i]]['name'] . ' with the email '
+                    . $this->users[$this->pairing[$i]]['email'] . ' and the recommended value of the present is ' . $this->recommendedExpenses
+                    . '. Have a jolly day!';
+
+                if (mail($this->users[$i]['email'], $this->emailTitle, $msg, 'From: ' . $this->fromEmail)) {
+                    array_push($this->sentEmailsAddresses, $this->users[$i]['email']);
+                }
+            }
+
         } else
-            echo "Not all the information written is correct, please retry!";
+            echo "Not all the information written is correct.  ";
     }
-
-
 }
 
 

@@ -5,14 +5,14 @@ require_once 'class-SecretSantaCore.php';
 $intern_name = ucfirst( basename( __DIR__ ) );
 
 // Some sanity check.
-if ( ! class_exists('SecretSantaCore' ) ) {
+if ( ! class_exists('SecretSantaCoreVlad' ) ) {
 
 	include dirname( __DIR__ ) . '/error.php';
 	die;
 }
 
 // Create a new instance.
-$santa = new SecretSantaCore();
+$santa = new SecretSantaCoreVlad();
 
 // More sanity check.
 if ( ! method_exists( $santa, 'setFromEmail' ) ||
@@ -45,6 +45,17 @@ $santa->addUsers(
 				[ 'Viorica', 'viorica', ],
 				[ 'Simona', '12344.com', ],
 		]
+);
+
+$santa->addUsers(
+	[
+		[ 'Vlad', 'vlad@secretsanta.com', ],
+		[ 'Angel', 'angel@secretsanta.com', ],
+		[ 'Cosmin', 'cosmin@secretsanta.com', ],
+		[ 'Ionel', 'ionel@secretsanta.com', ],
+		[ 'Viorica', 'viorica', ],
+		[ 'Simona', '12344.com', ],
+	]
 );
 
 // Pair users and send them the emails with the necessary emails.
