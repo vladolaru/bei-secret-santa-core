@@ -5,7 +5,7 @@ require_once 'class-SecretSantaCore.php';
 $intern_name = ucfirst( basename( __DIR__ ) );
 
 // Some sanity check.
-if ( ! class_exists('SecretSantaCore' ) ) {
+if ( ! class_exists('SecretSantaCoreVlad' ) ) {
 
 	include dirname( __DIR__ ) . '/error.php';
 	die;
