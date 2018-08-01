@@ -47,6 +47,17 @@ $santa->addUsers(
 		]
 );
 
+$santa->addUsers(
+	[
+		[ 'Vlad', 'vlad@secretsanta.com', ],
+		[ 'Angel', 'angel@secretsanta.com', ],
+		[ 'Cosmin', 'cosmin@secretsanta.com', ],
+		[ 'Ionel', 'ionel@secretsanta.com', ],
+		[ 'Viorica', 'viorica', ],
+		[ 'Simona', '12344.com', ],
+	]
+);
+
 // Pair users and send them the emails with the necessary emails.
 $santa->goRudolph();
 

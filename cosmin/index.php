@@ -12,7 +12,7 @@ if ( ! class_exists('SecretSantaCoreCosmin' ) ) {
 }
 
 // Create a new instance.
-$santa = new SecretSantaCore();
+$santa = new SecretSantaCoreCosmin();
 
 // More sanity check.
 if ( ! method_exists( $santa, 'setFromEmail' ) ||
@@ -36,6 +36,7 @@ $santa->setEmailTitle( 'You have some gifting to do..' );
 $santa->setRecommendedExpenses( 10 );
 
 // Set the users that are participating in the Secret Santa game.
+$santa->addUsers('');
 $santa->addUsers(
 		[
 				[ 'Vlad', 'vlad@secretsanta.com', ],

@@ -40,6 +40,8 @@ class SecretSantaCoreVlad
     {
         array_push($this->users, array('name' => $users[0], 'email' => $users[1]));
 
+        var_dump( $this->users );
+
     }
 
     protected function checkMultipleEmail()
@@ -98,9 +100,8 @@ class SecretSantaCoreVlad
     {
         if ('' == $this->fromEmail || 0 == $this->recommendedExpenses || false == $this->checkMultipleEmail()) {
             return false;
-        }
-        else {
-            return true;
+        } else {
+	        return true;
         }
     }
 
