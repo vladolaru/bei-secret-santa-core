@@ -24,6 +24,7 @@ class SecretSantaCoreVlad
 
     public function setRecommendedExpenses($recommended)
     {
+        // numarul introdus trebuie sa fie pozitiv si mai mare decat 0
         if (is_numeric($recommended)) {
             if ($recommended > 0) {
                 $this->recommendedExpenses = $recommended;
@@ -43,23 +44,17 @@ class SecretSantaCoreVlad
 
     }
 
-    public function randomize($users)
-    {
-        $first = 0;
-        $last = count($this->users) - 1;
-        return rand($first, $last);
-    }
-
     protected function checkMultipleEmail()
     {
-        for ($m = 0; $m < count($this->users); $m++) {
-            if (filter_var($this->users[$m]['email'], FILTER_VALIDATE_EMAIL) == false) {
+        // functia verifica sa nu existe email-uri introduse gresit sau de doua ori
+        for ($i = 0; $i < count($this->users); $i++) {
+            if (filter_var($this->users[$i]['email'], FILTER_VALIDATE_EMAIL) == false) {
                 return false;
             }
         }
-        for ($m = 0; $m < count($this->users) - 2; $m++) {
-            for ($n = $m + 1; $n < count($this->users) - 1; $n++) {
-                if ($this->users[$m]['email'] == $this->users[$n]['email']) {
+        for ($i = 0; $i < count($this->users) - 2; $i++) {
+            for ($n = $i + 1; $n < count($this->users) - 1; $n++) {
+                if ($this->users[$i]['email'] == $this->users[$n]['email']) {
                     return false;
                 }
             }
@@ -67,18 +62,32 @@ class SecretSantaCoreVlad
         return true;
     }
 
+    public function randomize()
+    {
+        // impartim aleator utilizatorii introdusi
+        $first = 0;
+        $last = count($this->users) - 1;
+        return rand($first, $last);
+    }
+
     protected function pairUsers()
     {
+        // creez un array in care se vor regasi userii; daca userul este nou indrodus, acesta va avea valoarea 1, daca deja primeste cadou, valoarea 0
+        // ru = randomized users
         $ru = array();
         for ($i = 0; $i < count($this->users); $i++) {
             $ru[$i] = 0;
         }
+
+        // fiecarui user ii va fi atribuita o pereche, luand in calcul ca destinatarul sa nu fie ales deja
         for ($i = 0; $i < count($this->users); $i++) {
-            $v = $this->randomize();
-            while ($ru[$v] != 0 || $v == $i) {
-                $v = $this->randomize();
+            $value = $this->randomize();
+            while ($ru[$value] != 0 || $value == $i) {
+                $value = $this->randomize();
             }
-            $ru[$v] = 1;
+
+            $this->pair[$i] = $value;
+            $ru[$value] = 1;
         }
     }
 
@@ -89,7 +98,7 @@ class SecretSantaCoreVlad
 
     public function checkUser()
     {
-        if ($this->fromEmail == '' || $this->recommendedExpenses == 0 || $this->checkMultipleEmail() == false) {
+        if ('' == $this->fromEmail || 0 == $this->recommendedExpenses || false == $this->checkMultipleEmail()) {
             return false;
         } else {
 	        return true;
@@ -99,27 +108,14 @@ class SecretSantaCoreVlad
     public function goRudolph()
     {
         if ($this->checkUser() == true) {
-            foreach ($this->users as $user) {
-                array_push($this->getSentEmailsAddresses(), $this->users['email']);
-            }
-
-
             $this->pairUsers();
-
-            for ($v = 0; $v < count($this->users); $v++) {
-                $msg = $this->users[$v]['name'] . ',' . "\r\n" . "\r\n" . "The Christmas is coming and for the Secret Santa event you have to buy a present for " . $this->users[$this->randomize[$v]]['name'] . " , his/her email is "
-                    . $this->users[$this->randomize[$v]]['email'] . ". Also, the recommended value of the gift is " . $this->recommendedExpenses
-                    . ". Merry Christmas!";
-                mail($this->users[$v]['email'], $this->emailTitle, $msg, "From: " . $this->fromEmail);
-            }
-
         }
-
-            else
-            echo "Please check again!!";
+        
     }
 
 }
+
+
 
 
 
