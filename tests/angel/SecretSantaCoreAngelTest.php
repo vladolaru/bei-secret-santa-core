@@ -99,7 +99,7 @@ final class SecretSantaCoreAngelTest extends TestCase {
 
 		$santa = new SecretSantaCoreAngel();
 
-		$this->assertEquals( 1, $santa->addUsers( [['Vlad','test@test.com']] ) );
+		//$this->assertEquals( 1, $santa->addUsers( [['Vlad','test@test.com']] ) );
 
 		$this->assertEquals( [
 			[
