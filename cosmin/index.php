@@ -43,7 +43,7 @@ $santa->addUsers(
 				[ 'Cosmin', 'cosmin@secretsanta.com', ],
 				[ 'Ionel', 'ionel@secretsanta.com', ],
                 [ 'Gica', 'gica@secretsanta.com', ],
-                [ '', 'zzzzzzzzzzzzzzzzz'],
+                [ 'zzzzzzzzzzzzzzzzz'],
 
 		]
 );
