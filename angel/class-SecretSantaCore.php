@@ -41,14 +41,14 @@ class SecretSantaCoreAngel {
     /**
      * Sets the fromEmail attribute
      *
-     * @throws Exception in case of invalid email
      * @param $email string
-     * @return true
+     * @return bool
      */
-    public function setMailFrom( $email ) {
+    public function setEmailFrom( $email ) {
         if( !filter_var( $email, FILTER_VALIDATE_EMAIL ) ) {
-            throw new Exception('Emailul: ' . $email . ' este invalid', 0);
+            return false;
         }
+
         $this->fromEmail = $email;
 
         return true;
@@ -77,17 +77,16 @@ class SecretSantaCoreAngel {
     /**
      * Sets the recommendedExpenses attribute
      *
-     * @throws Exception code 0 in case of invalid format of parameter or code 1 in case of invalid value
      * @param $allocatedSum int | string
-     * @return void
+     * @return bool
      */
     public function setRecommendedExpenses( $allocatedSum ) {
         if ( ! is_numeric( $allocatedSum ) ) {
-            throw new Exception('recommendedExpenses nu este o valoare numerica', 0);
+            return false;
         }
 
         if ($allocatedSum <= 0) {
-            throw new Exception('recommendedExpenses nu poate avea o valoare negativa sau 0', 1);
+            return false;
         }
 
         $this->recommendedExpenses = $allocatedSum;
@@ -99,17 +98,17 @@ class SecretSantaCoreAngel {
      * Calls the addUser() method for each user and throws the appropriate error for each one
      *
      * @param $newUsers array
-     * @see $this->addUser() for what exceptions are thrown
      * @return int|false The number of added users or false on invalid input format.
      */
     public function addUsers( $newUsers ) {
+    	$countAddedUsers = 0;
         foreach ( $newUsers as $newUser ) {
-            try {
-                $this->addUser( $newUser );
-            } catch (Exception $e) {
-                print_r( $e->getMessage() . '<br>');
-            }
+        	if ( $this->addUser( $newUser ) ) {
+        		$countAddedUsers++;
+	        }
         }
+
+        return $countAddedUsers;
     }
 
     /**
@@ -198,23 +197,24 @@ class SecretSantaCoreAngel {
      *
      * If the participant doesn't meat the criteria, code 0 exception is thrown. In case that the user already exists in the event, code 1 is thrown
      *
-     * @throws Exception
      * @param $user array
-     * @return void
+     * @return bool
      */
     protected function addUser( $user ) {
         if( !$this->checkParticipant( $user ) ) {
-            throw new Exception( $user[0] . ' is an invalid user', 0);
+            return false;
         }
 
         if ( $this->participantExists( $user[1] ) ) {
-            throw new Exception( $user[1] . ' already in event', 1);
+            return false;
         }
 
         $this->users[] = array(
             'name' => $user[0],
             'email'=> $user[1],
         );
+
+        return true;
     }
 
     /**

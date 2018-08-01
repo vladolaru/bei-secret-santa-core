@@ -1,7 +1,6 @@
 <?php
 
-class SecretSantaCoreCosmin
-{
+class SecretSantaCoreCosmin {
     /**
      * The email from which we will send the messages.
      *
@@ -53,7 +52,7 @@ class SecretSantaCoreCosmin
      * @return bool False if the mail fails the validation filter.
      *              Otherwise, it returns true.
      */
-    public function setFromEmail($email)
+    public function setEmailFrom($email)
     {
         if (null == filter_var($email, FILTER_VALIDATE_EMAIL) || false == filter_var($email, FILTER_VALIDATE_EMAIL)) {
             return false;
@@ -146,8 +145,7 @@ class SecretSantaCoreCosmin
      *
      * @return int
      */
-    protected
-    function randomizeUsersKey()
+    protected function randomizeUsersKey()
     {
         $firstUser = 0;
         $lastUser = count($this->users) - 1;
@@ -162,8 +160,7 @@ class SecretSantaCoreCosmin
      *              or if the required sum for the gifts is equal to 0, or if the emails validation function fails.
      *              Otherwise, it returns true.
      */
-    public
-    function attributesCheck()
+    public function attributesCheck()
     {
         if (count($this->users) < 3 ||
             '' == $this->fromEmail ||
@@ -183,8 +180,7 @@ class SecretSantaCoreCosmin
      *
      * @see $pairing - to understand what the array represents.
      */
-    protected
-    function doPairing()
+    protected function doPairing()
     {
         $frequency = array();
         for ($i = 0; $i < count($this->users); $i++) {
@@ -202,31 +198,30 @@ class SecretSantaCoreCosmin
         }
     }
 
-    /**
-     * Checks if there is an email address wrongly written, or if there are 2 emails that are the same.
-     *
-     *
-     * @return bool False if there is an invalid email or if there are users with the same email.
-     *              Otherwise returns true.
-     */
-    protected
-    function validateUsersEmails()
-    {
-        for ($i = 0; $i < count($this->users); $i++) {
-            if (false == filter_var($this->users[$i]['email'], FILTER_VALIDATE_EMAIL)) {
-                return false;
-            }
-        }
+	/**
+	 * Checks if there is an email address wrongly written, or if there are 2 emails that are the same.
+	 *
+	 *
+	 * @return bool False if there is an invalid email or if there are users with the same email.
+	 *              Otherwise returns true.
+	 */
+	protected function validateUsersEmails() {
+		for ( $i = 0; $i < count( $this->users ); $i ++ ) {
+			if ( false == filter_var( $this->users[ $i ]['email'], FILTER_VALIDATE_EMAIL ) ) {
+				return false;
+			}
+		}
 
-        for ($i = 0; $i < count($this->users) - 2; $i++) {
-            for ($j = $i + 1; $j < count($this->users) - 1; $j++) {
-                if ($this->users[$i]['email'] == $this->users[$j]['email']) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
+		for ( $i = 0; $i < count( $this->users ) - 2; $i ++ ) {
+			for ( $j = $i + 1; $j < count( $this->users ) - 1; $j ++ ) {
+				if ( $this->users[ $i ]['email'] == $this->users[ $j ]['email'] ) {
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
 
     /**
      * Checks if every required function was used properly, does the pairing between the given users.
@@ -235,8 +230,7 @@ class SecretSantaCoreCosmin
      *
      * @see doPairing() - to understand how the pairings are done and how/to who are the emails sent.
      */
-    public
-    function goRudolph()
+    public function goRudolph()
     {
 
         if ($this->attributesCheck() == true) {
