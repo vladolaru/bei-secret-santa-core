@@ -112,6 +112,8 @@ final class SecretSantaCoreAngelTest extends TestCase {
 		$this->assertEquals( 0, $santa->addUsers( [['Vlad','test@test.com']] ) );
 		$this->assertEquals( 0, $santa->addUsers( [[ 'name' => 'Vlad2', 'email' => 'test@test.com']] ) );
 		$this->assertEquals( 1, $santa->addUsers( [[ 'name' => 'Vlad2', 'email' => 'test2@test.com']] ) );
+		$this->assertEquals( 0, $santa->addUsers( [[  'email' => 'test2@test.com', 'name' => 'Vlad2']] ) );
+		$this->assertEquals( 1, $santa->addUsers( [[  'email' => 'test22@test.com', 'name' => 'Vlad2']] ) );
 
 		$this->assertEquals( [
 			[
@@ -122,6 +124,10 @@ final class SecretSantaCoreAngelTest extends TestCase {
 				'name' => 'Vlad2',
 				'email' => 'test2@test.com',
 			],
+            [
+                'name' => 'Vlad2',
+                'email' => 'test22@test.com',
+            ],
 		], $users_prop->getValue( $santa ) );
 
 		$this->assertEquals( 1, $santa->addUsers( [['Vlad3','test3@test.com'], ['Vlad3','test3@test.com'], ['Vlad3','test3@test.com']] ) );
@@ -135,6 +141,10 @@ final class SecretSantaCoreAngelTest extends TestCase {
 				'name' => 'Vlad2',
 				'email' => 'test2@test.com',
 			],
+            [
+                'name' => 'Vlad2',
+                'email' => 'test22@test.com',
+            ],
 			[
 				'name' => 'Vlad3',
 				'email' => 'test3@test.com',
