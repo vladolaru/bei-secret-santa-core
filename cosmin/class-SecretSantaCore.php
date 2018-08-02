@@ -1,6 +1,7 @@
 <?php
 
 class SecretSantaCoreCosmin {
+
 	/**
 	 * The email from which we will send the messages.
 	 *

@@ -5,14 +5,14 @@ require_once 'class-SecretSantaCore.php';
 $intern_name = ucfirst( basename( __DIR__ ) );
 
 // Some sanity check.
-if ( ! class_exists('SecretSantaCore' ) ) {
+if ( ! class_exists('SecretSantaCoreAngel' ) ) {
 
 	include dirname( __DIR__ ) . '/error.php';
 	die;
 }
 
 // Create a new instance.
-$santa = new SecretSantaCore();
+$santa = new SecretSantaCoreAngel();
 
 // More sanity check.
 if ( ! method_exists( $santa, 'setMailFrom' ) ||
