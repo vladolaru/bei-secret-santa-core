@@ -26,11 +26,10 @@ final class SecretSantaCoreAngelTest extends TestCase {
 			'email@example.com (Joe Smith)',
 			'email@example',
 			'email@-example.com',
-			'email@example.web',
 		];
 
 		foreach ( $invalid_emails as $invalid_email ) {
-			$this->assertEquals( false, $santa->setEmailFrom( $invalid_email ) );
+			$this->assertEquals( false, $santa->setEmailFrom( $invalid_email ), 'Tried email: ' . $invalid_email );
 		}
 	}
 
@@ -112,8 +111,8 @@ final class SecretSantaCoreAngelTest extends TestCase {
 		$this->assertEquals( 0, $santa->addUsers( [['Vlad','test@test.com']] ) );
 		$this->assertEquals( 0, $santa->addUsers( [[ 'name' => 'Vlad2', 'email' => 'test@test.com']] ) );
 		$this->assertEquals( 1, $santa->addUsers( [[ 'name' => 'Vlad2', 'email' => 'test2@test.com']] ) );
-		$this->assertEquals( 0, $santa->addUsers( [[  'email' => 'test2@test.com', 'name' => 'Vlad2']] ) );
-		$this->assertEquals( 1, $santa->addUsers( [[  'email' => 'test22@test.com', 'name' => 'Vlad2']] ) );
+		$this->assertEquals( 0, $santa->addUsers( [[ 'email' => 'test2@test.com', 'name' => 'Vlad2']] ) );
+		$this->assertEquals( 1, $santa->addUsers( [[ 'email' => 'test22@test.com', 'name' => 'Vlad2']] ) );
 
 		$this->assertEquals( [
 			[
