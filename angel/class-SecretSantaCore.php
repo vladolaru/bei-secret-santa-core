@@ -340,7 +340,7 @@ class SecretSantaCoreAngel {
 	 * @return bool
 	 */
 	protected function checkUserEmail( $email ) {
-		return $this->isValidEmailAddress( $email ) && $this->participantExists( $email );
+		return $this->isValidEmailAddress( $email ) && ! $this->participantExists( $email );
 	}
 
 	/**
@@ -353,6 +353,9 @@ class SecretSantaCoreAngel {
 	 * @return bool true if it already exists, false otherwise
 	 */
 	protected function participantExists( $participantEmail ) {
+		if ( empty( $this->users ) ) {
+			return false;
+		}
 		foreach ( $this->users as $user ) {
 			if ( $user['email'] === $participantEmail ) {
 				return true;
