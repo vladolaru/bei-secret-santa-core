@@ -15,7 +15,7 @@ if ( ! class_exists('SecretSantaCoreVlad' ) ) {
 $santa = new SecretSantaCoreVlad();
 
 // More sanity check.
-if ( ! method_exists( $santa, 'setFromEmail' ) ||
+if ( ! method_exists( $santa, 'setEmailFrom' ) ||
      ! method_exists( $santa, 'setEmailTitle' ) ||
      ! method_exists( $santa, 'setRecommendedExpenses' ) ||
      ! method_exists( $santa, 'addUsers' ) ||
@@ -27,7 +27,7 @@ if ( ! method_exists( $santa, 'setFromEmail' ) ||
 }
 
 // Set the email address the emails will be sent from.
-$santa->setFromEmail('santa@northpole.com');
+$santa->setEmailFrom('santa@northpole.com');
 
 // Set the sent emails' title.
 $santa->setEmailTitle( 'You have some gifting to do..' );
@@ -47,16 +47,6 @@ $santa->addUsers(
 		]
 );
 
-$santa->addUsers(
-	[
-		[ 'Vlad', 'vlad@secretsanta.com', ],
-		[ 'Angel', 'angel@secretsanta.com', ],
-		[ 'Cosmin', 'cosmin@secretsanta.com', ],
-		[ 'Ionel', 'ionel@secretsanta.com', ],
-		[ 'Viorica', 'viorica', ],
-		[ 'Simona', '12344.com', ],
-	]
-);
 
 // Pair users and send them the emails with the necessary emails.
 $santa->goRudolph();

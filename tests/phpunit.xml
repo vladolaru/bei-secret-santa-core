@@ -10,5 +10,8 @@
         <testsuite name="cosmin">
             <directory>cosmin</directory>
         </testsuite>
+        <testsuite name="vlad">
+            <directory>vlad</directory>
+        </testsuite>
     </testsuites>
 </phpunit>
