@@ -36,13 +36,14 @@ $santa->setEmailTitle( 'You have some gifting to do..' );
 $santa->setRecommendedExpenses( 10 );
 
 // Set the users that are participating in the Secret Santa game.
-$santa->addUsers('');
 $santa->addUsers(
 		[
 				[ 'Vlad', 'vlad@secretsanta.com', ],
 				[ 'Angel', 'angel@secretsanta.com', ],
 				[ 'Cosmin', 'cosmin@secretsanta.com', ],
 				[ 'Ionel', 'ionel@secretsanta.com', ],
+                [ 'Gica', 'gica@secretsanta.com', ],
+                [ 'zzzzzzzzzzzzzzzzz'],
 
 		]
 );
@@ -51,5 +52,5 @@ $santa->addUsers(
 $santa->goRudolph();
 
 // Get some feedback data for double checking
-echo 'For logging purposes, here are the email addresses we\'ve sent to:' . PHP_EOL;
+echo 'For logging purposes, here are the email addresses we\'ve sent to: ' . PHP_EOL;
 print_r( $santa->getSentEmailsAddresses() );
