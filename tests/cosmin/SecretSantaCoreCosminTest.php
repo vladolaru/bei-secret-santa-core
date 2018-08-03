@@ -29,7 +29,7 @@ final class SecretSantaCoreCosminTest extends TestCase {
 		];
 
 		foreach ( $invalid_emails as $invalid_email ) {
-			$this->assertEquals( false, $santa->setEmailFrom( $invalid_email ) );
+			$this->assertEquals( false, $santa->setFromEmail( $invalid_email ) );
 		}
 	}
 
@@ -53,7 +53,7 @@ final class SecretSantaCoreCosminTest extends TestCase {
 		];
 
 		foreach ( $valid_emails as $valid_email ) {
-			$this->assertEquals( true, $santa->setEmailFrom( $valid_email ) );
+			$this->assertEquals( true, $santa->setFromEmail( $valid_email ) );
 		}
 	}
 
@@ -122,6 +122,10 @@ final class SecretSantaCoreCosminTest extends TestCase {
 			[
 				'name' => 'Vlad2',
 				'email' => 'test2@test.com',
+			],
+			[
+				'name' => 'Vlad2',
+				'email' => 'test22@test.com',
 			],
 		], $users_prop->getValue( $santa ) );
 
