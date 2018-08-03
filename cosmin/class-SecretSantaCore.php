@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Used for the purpose of the Secret Santa type events.
+ */
 class SecretSantaCoreCosmin {
 
 	/**
@@ -49,11 +52,12 @@ class SecretSantaCoreCosmin {
 	/**
 	 * Sets the mail from which the messages will be sent.
 	 *
-	 * @var null | string
+	 * @param null | string $email
+	 *
 	 * @return bool False if the mail fails the validation filter.
 	 *              Otherwise, it returns true.
 	 */
-	public function setEmailFrom( $email ) {
+	public function setFromEmail( $email ) {
 		if ( null == filter_var( $email, FILTER_VALIDATE_EMAIL ) || false == filter_var( $email, FILTER_VALIDATE_EMAIL ) ) {
 			return false;
 		} else {
@@ -66,7 +70,7 @@ class SecretSantaCoreCosmin {
 	/**
 	 * Sets the recommendedExpenses attribute.
 	 *
-	 * @param $sum int | float
+	 * @param int | float $sum
 	 *
 	 * @return bool True if the value is a numeric one or if it's bigger than 0.
 	 *              Otherwise, it returns false.
@@ -87,7 +91,7 @@ class SecretSantaCoreCosmin {
 	 * In case the given string is empty, the title will be 'NoTitle'.
 	 * Otherwise, the title will be the given string.
 	 *
-	 * @param $title null | string
+	 * @param null | string $title
 	 */
 	public function setEmailTitle( $title ) {
 		$title = trim( $title );
@@ -125,17 +129,107 @@ class SecretSantaCoreCosmin {
 
 		foreach ( $users as $user ) {
 
-			if ( 2 != count( $user ) ||
-			     false == filter_var( $user[1], FILTER_VALIDATE_EMAIL ) ||
-			     '' == trim( $user[0] ) ||
-			     ! ctype_alpha( $user[0] ) ) {
+			$standardUser = array();
+
+			if ( $this->makeUserStandard( $user ) == false ) {
+				return false;
+			}
+
+			$standardUser = $standardUser + $this->makeUserStandard( $user );
+
+			if ( false == $this->checkDuplicateEmails( $standardUser ) ) {
+				return false;
+			}
+
+			if ( 2 != count( $standardUser ) ||
+			     false == filter_var( $standardUser[1], FILTER_VALIDATE_EMAIL ) ||
+			     '' == trim( $standardUser[0] ) ||
+			     ! ctype_alnum( $standardUser[0] ) ) {
 				continue;
 			}
 			array_push( $this->users, array(
-					'name'  => $user[0],
-					'email' => $user[1],
+					'name'  => $standardUser[0],
+					'email' => $standardUser[1],
 				)
 			);
+		}
+
+		return true;
+	}
+
+	/**
+	 * Standardizes and modifies the values given, so that the addUsers function will not meet any input errors.
+	 *
+	 * @param array
+	 *
+	 * @return array | bool
+	 */
+	protected function makeUserStandard( $user ) {
+
+		$standardUser = array();
+
+		if ( array_key_exists( 'name', $user ) && array_key_exists( 'email', $user ) ) {
+
+			$standardUser[0] = $user['name'];
+			$standardUser[1] = $user['email'];
+			unset( $user['name'] );
+			unset( $user['email'] );
+
+			return $standardUser;
+		}
+		if ( array_key_exists( 0, $user ) && array_key_exists( 1, $user ) ) {
+			$standardUser[0] = $user[0];
+			$standardUser[1] = $user[1];
+
+			return $standardUser;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * At the entry moment of an user, the function checks if there is already an user with
+	 * the same email in the class user array.
+	 *
+	 * @param array
+	 *
+	 * @return bool
+	 */
+	protected function checkDuplicateEmails( $standardUser ) {
+
+		if ( 0 == count( $this->users ) ) {
+			return true;
+		}
+		for ( $i = 0; $i <= count( $this->users ) - 1; $i ++ ) {
+			if ( $this->users[ $i ]['email'] == $standardUser[1] ) {
+				return false;
+			}
+		}
+
+		return true;
+
+	}
+
+	/**
+	 * Checks if there is an email address wrongly written, or if there are 2 emails that are the same.
+	 *
+	 *
+	 * @return bool False if there is an invalid email or if there are users with the same email.
+	 *              Otherwise returns true.
+	 */
+	protected function validateUsersEmails() {
+		for ( $i = 0; $i < count( $this->users ); $i ++ ) {
+			if ( false == filter_var( $this->users[ $i ]['email'], FILTER_VALIDATE_EMAIL ) ) {
+				return false;
+			}
+		}
+
+		for ( $i = 0; $i < count( $this->users ) - 2; $i ++ ) {
+			for ( $j = $i + 1; $j < count( $this->users ) - 1; $j ++ ) {
+				if ( $this->users[ $i ]['email'] == $this->users[ $j ]['email'] ) {
+					return false;
+				}
+			}
 		}
 
 		return true;
@@ -197,31 +291,6 @@ class SecretSantaCoreCosmin {
 	}
 
 	/**
-	 * Checks if there is an email address wrongly written, or if there are 2 emails that are the same.
-	 *
-	 *
-	 * @return bool False if there is an invalid email or if there are users with the same email.
-	 *              Otherwise returns true.
-	 */
-	protected function validateUsersEmails() {
-		for ( $i = 0; $i < count( $this->users ); $i ++ ) {
-			if ( false == filter_var( $this->users[ $i ]['email'], FILTER_VALIDATE_EMAIL ) ) {
-				return false;
-			}
-		}
-
-		for ( $i = 0; $i < count( $this->users ) - 2; $i ++ ) {
-			for ( $j = $i + 1; $j < count( $this->users ) - 1; $j ++ ) {
-				if ( $this->users[ $i ]['email'] == $this->users[ $j ]['email'] ) {
-					return false;
-				}
-			}
-		}
-
-		return true;
-	}
-
-	/**
 	 * Checks if every required function was used properly, does the pairing between the given users.
 	 *
 	 * Sends the emails to the users, and, one by one, if the email is accepted for delivery, it is added to the sentEmailAddresses attribute.
@@ -238,7 +307,7 @@ class SecretSantaCoreCosmin {
 
 				$msg = 'Dear ' . $this->users[ $i ]['name'] . ',' . "\r\n" . "\r\n" . 'The special person that you have to buy a present for, for the occasion of the Secret Santa Event, is ' . $this->users[ $this->pairing[ $i ] ]['name'] . ' with the email '
 				       . $this->users[ $this->pairing[ $i ] ]['email'] . ' and the recommended value of the present is ' . $this->recommendedExpenses
-				       . '. Have a jolly day!';
+				       . ' dollars. Have a jolly day!';
 
 				if ( mail( $this->users[ $i ]['email'], $this->emailTitle, $msg, 'From: ' . $this->fromEmail ) ) {
 					array_push( $this->sentEmailsAddresses, $this->users[ $i ]['email'] );

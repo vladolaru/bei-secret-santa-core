@@ -37,15 +37,14 @@ $santa->setRecommendedExpenses( 10 );
 
 // Set the users that are participating in the Secret Santa game.
 $santa->addUsers(
-		[
-				[ 'Vlad', 'vlad@secretsanta.com', ],
-				[ 'Angel', 'angel@secretsanta.com', ],
-				[ 'Cosmin', 'cosmin@secretsanta.com', ],
-				[ 'Ionel', 'ionel@secretsanta.com', ],
-                [ 'Gica', 'gica@secretsanta.com', ],
-                [ 'zzzzzzzzzzzzzzzzz'],
-
-		]
+	[
+		[ 'Vlad', 'vlad@secretsanta.com', ],
+		[ 'Angel', 'angel@secretsanta.com', ],
+		[ 'Cosmin', 'cosmin@secretsanta.com', ],
+		[ 'Ionel', 'ionel@secretsanta.com', ],
+		[ 'Viorica', 'viorica', ],
+		[ 'Simona', '12344.com', ],
+	]
 );
 
 // Pair users and send them the emails with the necessary emails.
