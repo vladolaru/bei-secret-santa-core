@@ -36,16 +36,14 @@ $santa->setEmailTitle( 'You have some gifting to do..' );
 $santa->setRecommendedExpenses( 10 );
 
 // Set the users that are participating in the Secret Santa game.
-$santa->addUsers(
-	[
-		[ 'Vlad', 'vlad@secretsanta.com', ],
-		[ 'Angel', 'angel@secretsanta.com', ],
-		[ 'Cosmin', 'cosmin@secretsanta.com', ],
-		[ 'Ionel', 'ionel@secretsanta.com', ],
-		[ 'Viorica', 'viorica', ],
-		[ 'Simona', '12344.com', ],
-	]
-);
+$santa->addUsers( [['Vlad','test@test.com']] );
+$santa->addUsers( [['Vlad','test@test.com']] );
+$santa->addUsers( [[ 'name' => 'Vlad2', 'email' => 'test@test.com']] );
+$santa->addUsers( [[ 'name' => 'Vlad2', 'email' => 'test2@test.com']] );
+$santa->addUsers( [[  'email' => 'test2@test.com', 'name' => 'Vlad2']] );
+$santa->addUsers( [[  'email' => 'test22@test.com', 'name' => 'Vlad2']] );
+$santa->addUsers( [['Vlad3','test3@test.com'], ['Vlad3','test3@test.com'], ['Vlad3','test3@test.com']] );
+
 
 // Pair users and send them the emails with the necessary emails.
 $santa->goRudolph();

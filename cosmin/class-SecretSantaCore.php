@@ -126,35 +126,35 @@ class SecretSantaCoreCosmin {
 		if ( empty( $users ) || ! is_array( $users ) ) {
 			return false;
 		}
+		$userCount = 0;
 
 		foreach ( $users as $user ) {
-
-			$standardUser = array();
 
 			if ( $this->makeUserStandard( $user ) == false ) {
 				return false;
 			}
 
-			$standardUser = $standardUser + $this->makeUserStandard( $user );
+			$standardUser = $this->makeUserStandard( $user );
 
-			if ( false == $this->checkDuplicateEmails( $standardUser ) ) {
-				return false;
-			}
 
 			if ( 2 != count( $standardUser ) ||
 			     false == filter_var( $standardUser[1], FILTER_VALIDATE_EMAIL ) ||
 			     '' == trim( $standardUser[0] ) ||
-			     ! ctype_alnum( $standardUser[0] ) ) {
+			     ! ctype_alnum( $standardUser[0] ) ||
+			     false == $this->checkDuplicateEmails( $standardUser ) ) {
 				continue;
 			}
 			array_push( $this->users, array(
 					'name'  => $standardUser[0],
 					'email' => $standardUser[1],
 				)
-			);
+				);
+
+
+			$userCount ++;
 		}
 
-		return true;
+		return $userCount;
 	}
 
 	/**
@@ -167,6 +167,10 @@ class SecretSantaCoreCosmin {
 	protected function makeUserStandard( $user ) {
 
 		$standardUser = array();
+
+		if ( ! is_array( $user ) ) {
+			return false;
+		}
 
 		if ( array_key_exists( 'name', $user ) && array_key_exists( 'email', $user ) ) {
 
