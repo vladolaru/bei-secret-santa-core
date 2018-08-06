@@ -141,6 +141,10 @@ final class SecretSantaCoreCosminTest extends TestCase {
 				'email' => 'test2@test.com',
 			],
 			[
+				'name' => 'Vlad2',
+				'email' => 'test22@test.com',
+			],
+			[
 				'name' => 'Vlad3',
 				'email' => 'test3@test.com',
 			],
